@@ -102,20 +102,18 @@ func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 // Shortcut for errors[len(errors)-1]
 func (a errorMsgs) Last() *Error {
 	length := len(a)
-	if length == 0 {
-		return nil
+	if length > 0 {
+		return a[length-1]
 	}
-	return a[length-1]
+	return nil
 }
 
 // Returns an array will all the error messages.
-// Example
-// ```
-// c.Error(errors.New("first"))
-// c.Error(errors.New("second"))
-// c.Error(errors.New("third"))
-// c.Errors.Errors() // == []string{"first", "second", "third"}
-// ``
+// Example:
+// 		c.Error(errors.New("first"))
+// 		c.Error(errors.New("second"))
+// 		c.Error(errors.New("third"))
+// 		c.Errors.Errors() // == []string{"first", "second", "third"}
 func (a errorMsgs) Errors() []string {
 	if len(a) == 0 {
 		return nil

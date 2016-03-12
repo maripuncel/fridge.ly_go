@@ -7,18 +7,18 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
-			"Comment": "v1.0rc1-110-g4cc2de6",
-			"Rev": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+			"Comment": "v1.0rc1-239-g7cdebae",
+			"Rev": "7cdebae4823596063fd4771c9cdd53eaa926241c"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin/binding",
-			"Comment": "v1.0rc1-110-g4cc2de6",
-			"Rev": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+			"Comment": "v1.0rc1-239-g7cdebae",
+			"Rev": "7cdebae4823596063fd4771c9cdd53eaa926241c"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin/render",
-			"Comment": "v1.0rc1-110-g4cc2de6",
-			"Rev": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+			"Comment": "v1.0rc1-239-g7cdebae",
+			"Rev": "7cdebae4823596063fd4771c9cdd53eaa926241c"
 		},
 		{
 			"ImportPath": "github.com/manucorporat/sse",
