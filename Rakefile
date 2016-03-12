@@ -1,3 +1,4 @@
+PROJECT_ROOT = "github.com/marimiyachi/fridge.ly"
 namespace :db do
   namespace :prod do
     task :migrate do
@@ -18,4 +19,13 @@ namespace :db do
       sh "migrate -url postgres://localhost/#{test_database}?sslmode=disable -path ./migrations up"
     end
   end
+end
+
+task :server do
+  sh "go install #{PROJECT_ROOT}/cmd/fridge.ly"
+  sh "heroku local"
+end
+
+task :test do
+  sh "go test #{PROJECT_ROOT}/pkg/..."
 end
