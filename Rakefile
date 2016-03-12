@@ -6,13 +6,16 @@ namespace :db do
   end
 
   namespace :local do
-    database_name = "fridgly_devel"
+    devel_database = "fridgely_devel"
+    test_database = "fridgely_test"
     task :setup do
-        sh "psql -h localhost postgres -c 'CREATE DATABASE fridgly_devel'"
+        sh "psql -h localhost postgres -c 'CREATE DATABASE #{devel_database}'"
+        sh "psql -h localhost postgres -c 'CREATE DATABASE #{test_database}'"
     end
 
     task :migrate do
-      sh "migrate -url postgres://localhost/#{database_name}?sslmode=disable -path ./migrations up"
+      sh "migrate -url postgres://localhost/#{devel_database}?sslmode=disable -path ./migrations up"
+      sh "migrate -url postgres://localhost/#{test_database}?sslmode=disable -path ./migrations up"
     end
   end
 end
