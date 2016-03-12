@@ -19,3 +19,8 @@ namespace :db do
     end
   end
 end
+
+task :server do
+  sh "go install github.com/marimiyachi/fridge.ly/cmd/fridge.ly"
+  sh "heroku local"
+end
