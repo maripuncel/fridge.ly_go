@@ -44,6 +44,7 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 	router.POST("/api/basket", api.CreateBasketHandler)
+	router.POST("/api/usage", api.CreateUsageHandler)
 	router.GET("/api/inventory", api.ViewInventoryHandler)
 
 	router.Run(":" + port)

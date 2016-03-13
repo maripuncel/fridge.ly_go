@@ -12,25 +12,24 @@ import (
 
 // Note: the "binding" tags here don't actually work, probably because
 // they're nested
-type PurchasedItem struct {
+type UsedItem struct {
 	ItemId   int64
-	Name     string   `json:"name" binding:"required"`
-	Quantity int      `json:"quantity" binding:"required"`
-	Unit     string   `json:"unit" binding:"required"`
-	Cost     *float64 `json:"cost" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Quantity int    `json:"quantity" binding:"required"`
+	Unit     string `json:"unit" binding:"required"`
 }
 
-type CreateBasketRequest struct {
-	PurchasedItems []PurchasedItem `json:"purchased_items" binding:"required"`
+type CreateUsageRequest struct {
+	UsedItems []UsedItem `json:"used_items" binding:"required"`
 }
 
-type CreateBasketResponse struct {
+type CreateUsageResponse struct {
 	OK bool `json:"ok"`
 }
 
-func (api API) CreateBasketHandler(c *gin.Context) {
-	var submitPurchaseRequest CreateBasketRequest
-	err := c.BindJSON(&submitPurchaseRequest)
+func (api API) CreateUsageHandler(c *gin.Context) {
+	var createUsageRequest CreateUsageRequest
+	err := c.BindJSON(&createUsageRequest)
 	if err != nil {
 		log.Println(err)
 	}
@@ -42,19 +41,19 @@ func (api API) CreateBasketHandler(c *gin.Context) {
 		return
 	}
 
-	purchasedItemsTableName := "purchased_items"
+	usedItemsTableName := "used_items"
 	itemsTableName := "items"
-	for _, purchasedItem := range submitPurchaseRequest.PurchasedItems {
+	for _, usedItem := range createUsageRequest.UsedItems {
 		err := tx.QueryRow(
 			fmt.Sprintf("SELECT id FROM %s WHERE name = $1", pq.QuoteIdentifier(itemsTableName)),
-			purchasedItem.Name,
-		).Scan(&purchasedItem.ItemId)
+			usedItem.Name,
+		).Scan(&usedItem.ItemId)
 
 		if err == sql.ErrNoRows {
 			err = tx.QueryRow(
 				fmt.Sprintf("INSERT INTO %s (name) VALUES ($1) RETURNING id", pq.QuoteIdentifier(itemsTableName)),
-				purchasedItem.Name,
-			).Scan(&purchasedItem.ItemId)
+				usedItem.Name,
+			).Scan(&usedItem.ItemId)
 
 			if err != nil {
 				log.Printf("Error with insert: %s", err)
@@ -69,11 +68,10 @@ func (api API) CreateBasketHandler(c *gin.Context) {
 		}
 
 		_, err = tx.Exec(
-			fmt.Sprintf("INSERT INTO %s (item_id, quantity, unit, cost) VALUES ($1, $2, $3, $4)", pq.QuoteIdentifier(purchasedItemsTableName)),
-			purchasedItem.ItemId,
-			purchasedItem.Quantity,
-			purchasedItem.Unit,
-			purchasedItem.Cost,
+			fmt.Sprintf("INSERT INTO %s (item_id, quantity, unit) VALUES ($1, $2, $3)", pq.QuoteIdentifier(usedItemsTableName)),
+			usedItem.ItemId,
+			usedItem.Quantity,
+			usedItem.Unit,
 		)
 		if err != nil {
 			log.Printf("Error with insert: %s", err)
