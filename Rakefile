@@ -18,6 +18,8 @@ namespace :db do
       sh "migrate -url postgres://localhost/#{devel_database}?sslmode=disable -path ./migrations up"
       sh "migrate -url postgres://localhost/#{test_database}?sslmode=disable -path ./migrations up"
     end
+
+    task 
   end
 end
 

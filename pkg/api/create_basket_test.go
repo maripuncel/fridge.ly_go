@@ -22,6 +22,17 @@ func apiWithLocalDB(t *testing.T) API {
 		t.Fatalf("Unable to truncate purchased_items table in test database: %s", err)
 	}
 
+	_, err = db.Exec("truncate items;")
+	if err != nil {
+		t.Fatalf("Unable to truncate items table in test database: %s", err)
+	}
+
+	// Because we depend on the ID being 1 in test
+	_, err = db.Exec("alter sequence items_id_seq restart with 1;")
+	if err != nil {
+		t.Fatalf("Unable to truncate items table in test database: %s", err)
+	}
+
 	return API{
 		DB: db,
 	}
@@ -30,7 +41,7 @@ func apiWithLocalDB(t *testing.T) API {
 func TestCreateBasketHandler(t *testing.T) {
 	cost := 1.28
 	testItem := PurchasedItem{
-		Name:     "eggs",
+		ItemId:   1,
 		Quantity: 12,
 		Unit:     "count",
 		Cost:     &cost,
@@ -74,7 +85,7 @@ func TestCreateBasketHandler(t *testing.T) {
 		t.Errorf("Got some errors: %s", context.Errors)
 	}
 
-	rows, err := api.DB.Query("select name, quantity, unit, cost from purchased_items;")
+	rows, err := api.DB.Query("select item_id, quantity, unit, cost from purchased_items;")
 	if err != nil {
 		t.Fatalf("Unable to query database to make sure insert worked: %s", err)
 	}
@@ -82,9 +93,9 @@ func TestCreateBasketHandler(t *testing.T) {
 	var count int
 	item := &PurchasedItem{}
 	for rows.Next() {
-		rows.Scan(&item.Name, &item.Quantity, &item.Unit, &item.Cost)
-		if item.Name != testItem.Name {
-			t.Errorf("Item name didn't match: wanted %s got %s", testItem.Name, item.Name)
+		rows.Scan(&item.ItemId, &item.Quantity, &item.Unit, &item.Cost)
+		if item.ItemId != testItem.ItemId {
+			t.Errorf("Item id didn't match: wanted %d got %d", testItem.ItemId, item.ItemId)
 		}
 
 		if item.Quantity != testItem.Quantity {
